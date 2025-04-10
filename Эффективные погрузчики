@@ -1,0 +1,30 @@
+"""
+На крупном заводе решили проверить эффективность работы погрузчиков и провели эксперимент: установили на складах датчики iBeacon и отслеживали перемещение погрузчиков между различными зонами.
+
+Каждая зона склада обозначается уникальным целым числом. Когда погрузчик перемещается из одной зоны в другую, система регистрирует номер новой зоны, в которую он въехал. В результате движение каждого погрузчика представлено в виде последовательности чисел.
+
+Инженеры завода считают, что наиболее эффективный путь, который может совершить погрузчик, — это поездка из некоторой начальной зоны в конечную, а затем возвращение по тому же маршруту обратно. Такая последовательность перемещений формирует так называемый «идеальный маршрут».
+
+Вам необходимо найти длину самого длинного «идеального маршрута» в записи перемещений погрузчика.
+"""
+
+def efficient_loaders(sequence: list[int]) -> int:
+    def expand_around_center(left: int, right: int) -> int:
+        while left >= 0 and right < len(sequence) and sequence[left] == sequence[right]:
+            left -= 1
+            right += 1
+        return right - left - 1
+
+    max_length = 0
+    for i in range(len(sequence)):
+        odd_length = expand_around_center(i, i)
+        even_length = expand_around_center(i, i + 1)
+        max_length = max(max_length, odd_length, even_length)
+
+    return max_length if max_length >= 2 else 0
+
+
+if __name__ == "__main__":
+    n = int(input())
+    sequence = list(map(int, input().split()))
+    print(efficient_loaders(sequence))
