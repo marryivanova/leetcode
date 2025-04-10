@@ -1,0 +1,73 @@
+"""
+В далёкой галактике, на планете Разделяндия, жители одержимы математическими выражениями. Однако их выражения для нас кажутся слишком простыми, и всегда стоит вопрос: «А минусы будут?».
+
+Вам дана строка S SS, представляющая собой математическое выражение, содержащее целые числа, операции сложения «+» и вычитания «-», а также скобки «(» и «)» для определения порядка операций. Сами числа, операторы и скобки могут быть разделены пробелами.
+Ваша задача — ответить жителям Разделяндии, вычислив итоговое значение их выражения.
+
+Гарантируется, что:
+- Строка содержит только допустимые символы: цифры, пробелы, операторы «+» и «-», а также круглые скобки «(» и «)».
+- Строка корректно сбалансирована по скобкам (каждая открывающая скобка имеет соответствующую закрывающую).
+- Пустых скобок нет (вида «()»).
+- Все числа во входной строке – целые числа, и их значения входят в 32-битный целочисленный диапазон.
+
+Результат вычисления выражения входит в 64-битный целочисленный диапазон.
+"""
+
+
+def _check_brackets(s: str) -> bool:
+    stack = 0
+    for char in s:
+        if char == "(":
+            stack += 1
+        elif char == ")":
+            stack -= 1
+            if stack < 0:
+                return False
+    return stack == 0
+
+
+def correct_calculation(expr_math: str) -> int:
+    ex = expr_math.replace(" ", "")
+    if not _check_brackets(ex):
+        raise ValueError
+
+    stack = []
+    result = 0
+    current_number = 0
+    sign = 1
+    i = 0
+
+    while i < len(ex):
+        char = ex[i]
+
+        if char.isdigit():
+            current_number = 0
+            while i < len(ex) and ex[i].isdigit():
+                current_number = current_number * 10 + int(ex[i])
+                i += 1
+            result += sign * current_number
+            sign = 1
+            i -= 1
+        elif char == "+":
+            sign = 1
+        elif char == "-":
+            if i == 0 or ex[i - 1] in "(+-":
+                sign *= -1
+            else:
+                sign = -1
+        elif char == "(":
+            stack.append((result, sign))
+            result = 0
+            sign = 1
+        elif char == ")":
+            prev_result, prev_sign = stack.pop()
+            result = prev_result + prev_sign * result
+            sign = 1
+        i += 1
+
+    return result
+
+
+if __name__ == "__main__":
+    expr = input().strip()
+    print(correct_calculation(expr))
