@@ -1,0 +1,47 @@
+"""
+В первой строке выведите количество языков, которые знают все школьники.
+Начиная со второй строки - список таких языков. Затем - количество языков, которые знает хотя бы один школьник, на следующих строках - список таких языков.
+
+Пример:
+3
+3
+Russian
+English
+Japanese
+2
+Russian
+English
+1
+English
+
+"""
+def main():
+    n = int(input())
+    all_languages = set()
+    common_languages = None
+
+    for _ in range(n):
+        m = int(input())
+        student_languages = set()
+        for __ in range(m):
+            lang = input().strip()
+            student_languages.add(lang)
+
+        if common_languages is None:
+            common_languages = student_languages.copy()
+        else:
+            common_languages.intersection_update(student_languages)
+
+        all_languages.update(student_languages)
+
+    print(len(common_languages))
+    for leng in sorted(common_languages):
+        print(leng)
+
+    print(len(all_languages))
+    for l in sorted(all_languages):
+        print(l)
+
+
+if __name__ == "__main__":
+    main()
